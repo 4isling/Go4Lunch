@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Go4Lunch</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_workmate">Workmate</string>
+    <string name="title_restaurant">Restaurant</string>
+    <string name="title_map">Map</string>
+    <string name="your_lunch">YOUR LUNCH</string>
+    <string name="settings">SETTINGS</string>
+    <string name="logout">LOGOUT</string>
+    <string name="open_nav_drawer">open navigation drawer</string>
+    <string name="close_nav_drawer">close navigation drawer</string>
+    <string name="email_user_header">email</string>
+    <string name="user_name">user_name</string>
+    <string name="go4lunch_logo">Go4Lunch Logo</string>
+</resources>
