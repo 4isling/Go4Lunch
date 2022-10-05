@@ -34,6 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start|bottom"
         android:layout_weight="1"
+
         android:contentDescription="@string/go4lunch_logo"
         android:src="@drawable/ic_go4lunch_logo"
         app:layout_constraintBottom_toBottomOf="parent"
