@@ -15,10 +15,10 @@ public class FirebaseHelper {
     }
 
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
-    public final CollectionReference workmatesRef = db.collection("workmates");
+    public final CollectionReference workmateRef = db.collection("workmates");
 
-    public Task<QuerySnapshot> getAllWorkmates(){
-        return workmatesRef.get();
+    public Task<QuerySnapshot> getAllWorkmate(){
+        return workmateRef.get();
     }
 
 }
