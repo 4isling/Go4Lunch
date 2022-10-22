@@ -8,13 +8,19 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.exemple.go4lunch.databinding.FragmentRestaurantBinding;
+import com.exemple.go4lunch.ui.ViewModelFactory;
 
 public class RestaurantFragment extends Fragment {
 
     private FragmentRestaurantBinding binding;
+    private RecyclerView recyclerView;
+    private RestaurantAdapter adapter;
+    private RestaurantViewModel viewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -24,10 +30,23 @@ public class RestaurantFragment extends Fragment {
         binding = FragmentRestaurantBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textRestaurant;
-        restaurantViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        this.initRecyclerView();
+
         return root;
     }
+
+
+    private void initRecyclerView(){
+        ViewModel viewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(RestaurantViewModel.class);
+        adapter = new RestaurantAdapter();
+        recyclerView.setAdapter(adapter);
+        getBaseList();
+    }
+
+    private void getBaseList(){
+        viewModel.getAllRestaurants().observe(getViewLifecycleOwner(), adapter::submitList);
+    }
+
 
     @Override
     public void onDestroyView() {

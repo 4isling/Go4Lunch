@@ -1,4 +1,3 @@
-
 package com.exemple.go4lunch.data.restaurant;
 
 import com.google.gson.annotations.Expose;

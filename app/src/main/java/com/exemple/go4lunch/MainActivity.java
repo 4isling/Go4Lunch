@@ -32,6 +32,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView drawerNavView;
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
+    private MapFragment mapFragment;
+    private RestaurantFragment restaurantFragment;
+    private WorkmateFragment workmateFragment;
 
 
     @Override
@@ -40,12 +43,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        this.createFragments();
         this.configureToolbar();
         this.configureBottomNavView();
         this.configureDrawerLayout();
         this.configureDrawerNavView();
 
+    }
+
+    private void createFragments(){
+        this.mapFragment = new MapFragment();
+        this.restaurantFragment = new RestaurantFragment();
+        this.workmateFragment = new WorkmateFragment();
     }
 
     private void configureToolbar(){
@@ -71,15 +80,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         binding.bottomNavView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()){
                 case R.id.navigation_map:
-                    replaceFragment(new MapFragment());
+                    replaceFragment(mapFragment);
                     break;
 
                 case R.id.navigation_restaurant:
-                    replaceFragment(new RestaurantFragment());
+                    replaceFragment(restaurantFragment);
                     break;
 
                 case R.id.navigation_workmate:
-                    replaceFragment(new WorkmateFragment());
+                    replaceFragment(workmateFragment);
                     break;
             }return true;
         });

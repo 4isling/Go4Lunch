@@ -14,4 +14,28 @@
     <string name="email_user_header">email</string>
     <string name="user_name">user_name</string>
     <string name="go4lunch_logo">Go4Lunch Logo</string>
+    <string name="app_slogan">Find a nice restaurant and invite your co-workers for lunch</string>
+    <string name="open_until_xpm">Open until Xpm</string>
+    <string name="restaurant_address">82 Bd de Clichy, 75018 Paris</string>
+    <string name="type_of_food">French -</string>
+    <string name="restaurant_name">Moulin Rouge</string>
+    <string name="coworker_number">(2)</string>
+    <!--Firebase--><!--googleApi-->
+    <string name="firebase_app_key">AIzaSyD2-mxIKx2n_L-EAPzyNpN5x7e5czSIGWE</string>
+
+    <!--Google Api id-->
+    <string name="map_id">24ed7a8f385db344</string>
+
+    <!--Facebook-->
+    <string name="facebook_app_id">927704961249495</string>
+    <string name="fb_login_protocol_scheme"> </string>
+    <!--
+    client id : TXVvbTVWYVM0alpfSHBUUTU0T0c6MTpjaQ
+    Client secret : A8-RYDmIWgj6VUQS-IxgaHMgnfHEkFYsbfEcNOj2w9eVEfkojv
+       -->
+
+    <!--Twitter-->
+    <string name="twitter_app_id">23762590</string>
+    <string name="tw_login_protocol_scheme"> </string>
+
 </resources>
