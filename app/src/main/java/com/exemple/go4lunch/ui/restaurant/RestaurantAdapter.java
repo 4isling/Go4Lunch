@@ -11,9 +11,9 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.exemple.go4lunch.R;
-import com.exemple.go4lunch.model.restaurant.RestaurantStateItem;
+import com.exemple.go4lunch.data.restaurant.Result;
 
-public class RestaurantAdapter extends ListAdapter<RestaurantStateItem, RestaurantAdapter.ViewHolder> {
+public class RestaurantAdapter extends ListAdapter<Result, RestaurantAdapter.ViewHolder> {
 
     public RestaurantAdapter(){
         super(new RestaurantItemCallback());
@@ -45,18 +45,22 @@ public class RestaurantAdapter extends ListAdapter<RestaurantStateItem, Restaura
 
         }
 
-        public void bind(RestaurantStateItem item) {
+        public void bind(Result restaurant) {
+            restaurantName.setText(restaurant.getName());
+            restaurantAddress.setText(restaurant.getVicinity());
+            restaurantOpenHour.setText(restaurant.getOpeningHours().toString());
+            restaurantFoodType.setText(restaurant.getTypes().toString());
         }
     }
 
-    private static class RestaurantItemCallback extends DiffUtil.ItemCallback<RestaurantStateItem>{
+    private static class RestaurantItemCallback extends DiffUtil.ItemCallback<Result>{
         @Override
-        public boolean areItemsTheSame(@NonNull RestaurantStateItem oldItem, @NonNull RestaurantStateItem newItem) {
+        public boolean areItemsTheSame(@NonNull Result oldItem, @NonNull Result newItem) {
             return oldItem.getName().equals(newItem.getName()) && oldItem.getGeometry().equals(newItem.getGeometry());
         }
 
         @Override
-        public boolean areContentsTheSame(@NonNull RestaurantStateItem oldItem, @NonNull RestaurantStateItem newItem){
+        public boolean areContentsTheSame(@NonNull Result oldItem, @NonNull Result newItem){
             return oldItem.equals(newItem);
         }
     }

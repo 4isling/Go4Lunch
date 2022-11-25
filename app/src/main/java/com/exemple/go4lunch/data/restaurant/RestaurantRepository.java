@@ -1,9 +1,11 @@
 package com.exemple.go4lunch.data.restaurant;
 
+import android.location.Location;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.exemple.go4lunch.R;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,26 +17,30 @@ import retrofit2.Response;
 
 public class RestaurantRepository {
     private final RestaurantApi restaurantApi;
-
-    private final Map<Integer, RestaurantResult> alreadyFetchedResponses = new HashMap<>();
+    private final String apiKey = String.valueOf(R.string.firebase_web_api_key);
+    private final Map<Location, RestaurantResult> alreadyFetchedResponses = new HashMap<>();
 
     public RestaurantRepository(RestaurantApi restaurantApi){
         this.restaurantApi = restaurantApi;
     }
 
+
     public LiveData<List<Result>> getRestaurantLiveData(Location userLocation){
         MutableLiveData<List<Result>> restaurantMutableLiveData = new MutableLiveData<>();
 
-        RestaurantResult result = alreadyFetchedResponses.get(userLocation);
+        String sUserLocation = userLocation.toString();
 
-        if (result != null){
-            restaurantMutableLiveData.setValue(result.getResults());
+        RestaurantResult restaurantResult = alreadyFetchedResponses.get(sUserLocation);
+
+        if (restaurantResult != null){
+            restaurantMutableLiveData.setValue(restaurantResult.getResults());
         }else{
-            restaurantApi.getListOfRestaurants("Restaurants", userLocation,5000,"restaurant", apiKey).enqueue(new Callback<RestaurantResult>() {
+            restaurantApi.getListOfRestaurants("Restaurants", sUserLocation,5000,"restaurant", apiKey)
+                    .enqueue(new Callback<RestaurantResult>() {
                 @Override
                 public void onResponse(Call<RestaurantResult> call, Response<RestaurantResult> response) {
                     if (response.body() != null){
-                        alreadyFetchedResponses.put(page, response.body());
+                        alreadyFetchedResponses.put(userLocation, response.body());
 
                         restaurantMutableLiveData.setValue(response.body().getResults());
                     }
@@ -47,5 +53,9 @@ public class RestaurantRepository {
             });
         }
         return restaurantMutableLiveData;
+    }
+
+    private void initData(){
+
     }
 }

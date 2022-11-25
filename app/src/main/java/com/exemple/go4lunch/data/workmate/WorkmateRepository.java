@@ -3,6 +3,7 @@ package com.exemple.go4lunch.data.workmate;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.exemple.go4lunch.data.FirebaseHelper;
@@ -30,7 +31,7 @@ public class WorkmateRepository {
         mFirebaseHelper = FirebaseHelper.getInstance();
         // Uncomment this method to populate your firebase database, it will upload some data
         // Comment it again after the first launch
-        // initData();
+        //initData();
     }
 
     public MutableLiveData<List<Workmate>> getAllWorkmate(){
@@ -53,8 +54,14 @@ public class WorkmateRepository {
         });
         return listOfWorkmate;
     }
+/*
+    public LiveData<Workmate> searchWorkmateByName(String name){
+    }*/
 
     public void initData(){
         FirebaseHelper.getInstance().workmateRef.add(new Workmate("https://cdn-s-www.leprogres.fr/images/f918821f-62f0-4d0e-a004-2a67aa8ea4bc/NW_raw/raoul-duke-(johnny-depp)-dans-las-vegas-parano-de-terry-gilliam-photo-du-film-1530263043.jpg","Jonny Deep","1"));
+
+
+
     }
 }

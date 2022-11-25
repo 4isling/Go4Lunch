@@ -22,7 +22,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitService {
     private Location userLocation;
-    private String key = String.valueOf(R.string.firebase_app_key);
+    private String key = String.valueOf(R.string.firebase_web_api_key);
     private String baseUrl;
 
     private static final Gson gson = new GsonBuilder().setLenient().create();
@@ -34,11 +34,7 @@ public class RetrofitService {
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build();
 
-
-    public void setBaseUrl(Location userLocation, String key){
-        this.baseUrl = "\"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+ userLocation + "&radius=5000&type=restaurant&key=" + key + "\"";
+    public static RestaurantApi getRestaurantApi(){
+        return retrofit.create(RestaurantApi.class);
     }
-
-
-
 }

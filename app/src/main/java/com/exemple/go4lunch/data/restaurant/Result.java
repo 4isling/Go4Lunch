@@ -61,7 +61,7 @@ public class Result implements Serializable
     private int userRatingsTotal;
     @SerializedName("vicinity")
     @Expose
-    private String vicinity;
+    private String vicinity; // Address
     private final static long serialVersionUID = 723177399419076468L;
 
     /**

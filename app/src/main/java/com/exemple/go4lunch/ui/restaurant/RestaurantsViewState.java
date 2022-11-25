@@ -11,44 +11,20 @@ public class RestaurantsViewState {
     @NonNull
     private final List<Result> restaurants;
 
-    private final boolean isPreviousPageButtonEnabled;
-
     public RestaurantsViewState(
-            @NonNull List<Result> restaurants,
-            boolean isPreviousPageButtonEnabled
+            @NonNull List<Result> restaurants
     ){
         this.restaurants = restaurants;
-        this.isPreviousPageButtonEnabled = isPreviousPageButtonEnabled;
     }
+
     @NonNull
     public List<Result> getRestaurants(){
         return restaurants;
     }
 
-    public boolean isPreviousPageButtonEnabled(){
-        return isPreviousPageButtonEnabled;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        RestaurantsViewState that = (RestaurantsViewState) o;
-        return isPreviousPageButtonEnabled == that.isPreviousPageButtonEnabled &&
-                restaurants.equals(that.restaurants);
-    }
-
     @Override
     public int hashCode(){
-        return Objects.hash(restaurants, isPreviousPageButtonEnabled);
+        return Objects.hash(restaurants);
     }
 
-    @NonNull
-    @Override
-    public String toString(){
-        return "RestaurantsViewState{"+
-                "restaurants"+ restaurants +
-                ", isPreviousPageButtonEnabled=" + isPreviousPageButtonEnabled +
-                '}';
-    }
 }

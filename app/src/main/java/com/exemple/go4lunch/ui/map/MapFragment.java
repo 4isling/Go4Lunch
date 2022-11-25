@@ -36,7 +36,6 @@ import java.util.List;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
-    private MapViewModel mapViewModel = new ViewModelProvider(this).get(MapViewModel.class);
     private FragmentMapBinding binding;
     private SupportMapFragment supportMapFragment;
 
@@ -66,18 +65,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
 
-    // Used for selecting the current place.
-    private static final int M_MAX_ENTRIES = 15;
-    private String[] likelyPlaceNames;
-    private String[] likelyPlaceAddresses;
-    private List[] likelyPlaceAttributions;
-    private LatLng[] likelyPlaceLatLngs;
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        binding = FragmentMapBinding.inflate(inflater, container, false);
+        binding = FragmentMapBinding.inflate(getLayoutInflater());
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_view);
         View root = binding.getRoot();
+        initMap();
         getLocationPermission();
         getCurrentLocation();
         return root;
@@ -91,19 +85,32 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void initMap(){
-        SupportMapFragment mapFragment = SupportMapFragment.newInstance();
-        getChildFragmentManager()
-                .beginTransaction()
-                .add(R.id.map_view, mapFragment)
-                .commit();
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
+            .findFragmentById(R.id.map_view);
+
+        mapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap mMap) {
+                mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+                mMap.clear(); //clear old markers
+
+                CameraPosition googlePlex = CameraPosition.builder()
+                        .target(new LatLng(37.4219999,-122.0862462))
+                        .zoom(10)
+                        .bearing(0)
+                        .tilt(45)
+                        .build();
+
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(googlePlex), 10000, null);
+
+            }
+        });
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
-                .findFragmentById(R.id.map_view);
-        mapFragment.getMapAsync(this);
     }
 
     @Override

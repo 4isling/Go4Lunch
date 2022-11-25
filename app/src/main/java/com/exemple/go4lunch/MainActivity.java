@@ -1,9 +1,12 @@
 package com.exemple.go4lunch;
 
+import android.Manifest;
+import android.app.Application;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.exemple.go4lunch.data.permission_checker.PermissionChecker;
 import com.exemple.go4lunch.ui.map.MapFragment;
 import com.exemple.go4lunch.ui.restaurant.RestaurantFragment;
 import com.exemple.go4lunch.ui.workmate.WorkmateFragment;
@@ -13,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -36,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private RestaurantFragment restaurantFragment;
     private WorkmateFragment workmateFragment;
 
+//@TODO retirer de main activity l'override de activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,11 +48,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
         this.createFragments();
         this.configureToolbar();
         this.configureBottomNavView();
         this.configureDrawerLayout();
         this.configureDrawerNavView();
+        this.checkUserLocationPermission();
+
+        this.getResources().getString(R.string.MAPS_API_KEY);
+    }
+
+    private void checkUserLocationPermission(){
+        ActivityCompat.requestPermissions(
+                this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                0
+        );
 
     }
 
@@ -116,7 +133,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         switch (id){
             case R.id.your_lunch:
-
                 break;
 
             case R.id.settings:

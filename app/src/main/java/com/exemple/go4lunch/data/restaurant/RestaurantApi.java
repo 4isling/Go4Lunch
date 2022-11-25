@@ -15,6 +15,9 @@ public interface RestaurantApi {
                                                 @Query("key")String key
                                                 );
 
+/*
+    @GET("details/json")
+    Call<>*/
 
 
 }
