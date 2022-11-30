@@ -34,8 +34,9 @@
     <string name="map_id">24ed7a8f385db344</string>
 
     <!--Facebook-->
-    <string name="facebook_app_id">927704961249495</string>
-    <string name="fb_login_protocol_scheme"> </string>
+    <string name="facebook_application_id" translatable="false">927704961249495</string>
+    <string name="fb_login_protocol_scheme" translatable="false">fb927704961249495</string>
+    <string name="facebook_client_token" translatable="false">8a5247711d969feec99daaa9afc1f643</string>
     <!--
     client id : TXVvbTVWYVM0alpfSHBUUTU0T0c6MTpjaQ
     Client secret : A8-RYDmIWgj6VUQS-IxgaHMgnfHEkFYsbfEcNOj2w9eVEfkojv

@@ -31,6 +31,7 @@ public class RestaurantFragment extends Fragment {
         initRecyclerView();
         initViewModel();
 
+
         return root;
     }
 
@@ -43,8 +44,7 @@ public class RestaurantFragment extends Fragment {
     }
 
     private void initViewModel(){
-        viewModel =
-                new ViewModelProvider(this, ViewModelFactory.getInstance()).get(RestaurantViewModel.class);
+        viewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(RestaurantViewModel.class);
     }
 
     private void getBaseList(){

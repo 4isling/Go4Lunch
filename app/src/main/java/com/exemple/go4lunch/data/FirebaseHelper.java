@@ -24,6 +24,8 @@ public class FirebaseHelper {
     public Task<QuerySnapshot> getAllWorkmate(){
         return workmateRef.get();
     }
+
+
 /*
     public static Task<Void> createUser(Workmate workmate){
         return FirebaseFirestore
