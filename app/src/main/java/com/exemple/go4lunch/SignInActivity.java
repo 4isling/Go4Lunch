@@ -27,6 +27,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthCredential;
@@ -51,8 +52,14 @@ public class SignInActivity extends AppCompatActivity {
     private FirebaseUser firebaseUser;
     private GoogleSignInClient googleSignInClient;
     private FirebaseAuth.AuthStateListener listener;
+    private List<AuthUI.IdpConfig> providers;
 
-
+    @Override
+    protected void onStart(){
+        super.onStart();
+        firebaseAuth.addAuthStateListener(listener);
+        //firebaseAuth.addAuthStateListener(listener);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,22 +72,27 @@ public class SignInActivity extends AppCompatActivity {
         boolean isMain = isMainProcess(this);
         FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(isMain).build();
         FirebaseFirestore.getInstance().setFirestoreSettings(settings);
+
         listener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
 
             }
         };
+
         if (!isMain) {
             // other things
             return;
         }
+
         // other things
         if(firebaseAuth.getCurrentUser() != null){
             startActivity(new Intent(this, MainActivity.class));
             this.finish();
         }
         initFirebaseAuth();
+
+
     }
 
     private boolean isMainProcess(Context context) {
@@ -113,11 +125,10 @@ public class SignInActivity extends AppCompatActivity {
 
     }
 
-
     @Override
-    protected void onStart(){
-        super.onStart();
-        //firebaseAuth.addAuthStateListener(listener);
+    protected void onStop() {
+        if(listener != null)firebaseAuth.removeAuthStateListener(listener);
+        super.onStop();
     }
 
     @Override
@@ -128,28 +139,40 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onStop() {
-        if(listener != null)firebaseAuth.removeAuthStateListener(listener);
-        super.onStop();
-    }
 
-    private void initFirebaseAuth(){
-        List<AuthUI.IdpConfig> providers = Arrays.asList(
+
+    public void initFirebaseAuth(){
+        providers = Arrays.asList(
+                new AuthUI.IdpConfig.EmailBuilder().build(),
                 new AuthUI.IdpConfig.GoogleBuilder().build(),
-                new AuthUI.IdpConfig.FacebookBuilder().build(),
                 new AuthUI.IdpConfig.TwitterBuilder().build(),
-                new AuthUI.IdpConfig.EmailBuilder().build()
+                new AuthUI.IdpConfig.FacebookBuilder().build()
         );
 
-        //remplace signInFirebase
-        Intent signInIntent = AuthUI.getInstance()
-                .createSignInIntentBuilder()
-                .setAvailableProviders(providers)
-                .build();
-        signInLauncher.launch(signInIntent);
+        listener = new FirebaseAuth.AuthStateListener() {
 
-    }
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null)
+                {
+                    Toast.makeText(SignInActivity.this, "You already login with uid"+ user.getUid(), Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    startActivityForResult(
+                            AuthUI.getInstance()
+                                    .createSignInIntentBuilder()
+                                    .setAvailableProviders(providers)
+                                    .build(),
+                            RC_SIGN_IN);
+                }
+            }
+        };
+        //remplace signInFirebase
+/*
+
+  */  }
 
     private void onSignInResult(FirebaseAuthUIAuthenticationResult result) {
         IdpResponse response = result.getIdpResponse();
@@ -187,21 +210,25 @@ public class SignInActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode,resultCode,data);
         if(requestCode == RC_SIGN_IN){
+            IdpResponse response = IdpResponse.fromResultIntent(data);
+
             if(resultCode == RESULT_OK){
                 //on User signin = true;
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
                 Log.d(TAG, "onActivityResult:" + user.getEmail());
 
                 if(user.getMetadata().getCreationTimestamp() == user.getMetadata().getLastSignInTimestamp()){
                     Toast.makeText(this,"@string/welcome_new_user", Toast.LENGTH_SHORT).show();
-                }else{
+                }
+                else{
                     Toast.makeText(this,"@string/welcome_back", Toast.LENGTH_SHORT).show();
                 }
+
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
 
             }else{
-                IdpResponse response = IdpResponse.fromResultIntent(data);
                 if(response==null){
                     Log.d(TAG, "onActivityResult:User cancel sign in request");
                 }else{
@@ -210,4 +237,5 @@ public class SignInActivity extends AppCompatActivity {
             }
         }
     }
+
 }

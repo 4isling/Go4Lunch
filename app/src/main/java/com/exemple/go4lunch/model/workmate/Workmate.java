@@ -4,9 +4,10 @@ package com.exemple.go4lunch.model.workmate;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Workmate {
+public class Workmate implements Serializable {
     private String id;
     private String avatarUrl;
     private String name;
@@ -14,6 +15,9 @@ public class Workmate {
     private String restaurantAddress = "";
     private String restaurantName = "";
 
+    public Workmate() {
+        // No-argument constructor
+    }
 
     public Workmate(String avatarUrl, String name, String id) {
         this.id = id;

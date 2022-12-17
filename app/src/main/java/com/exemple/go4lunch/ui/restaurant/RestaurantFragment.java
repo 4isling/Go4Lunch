@@ -14,27 +14,37 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.exemple.go4lunch.data.permission_checker.PermissionChecker;
 import com.exemple.go4lunch.databinding.FragmentRestaurantBinding;
 import com.exemple.go4lunch.ui.ViewModelFactory;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 
 public class RestaurantFragment extends Fragment {
 
     private FragmentRestaurantBinding binding;
     private RestaurantAdapter adapter;
     private RestaurantViewModel viewModel;
+    public FusedLocationProviderClient fusedLocationProviderClient;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentRestaurantBinding.inflate(inflater, container, false);
+
         View root = binding.getRoot();
-        initRecyclerView();
+
         initViewModel();
-
-
+        setFusedLocationProviderClient();
+        new PermissionChecker(getActivity().getApplication()).hasLocationPermission();
+        initRecyclerView();
+        getBaseList();
         return root;
     }
 
+    private void initViewModel(){
+        viewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(RestaurantViewModel.class);
+    }
 
     private void initRecyclerView(){
         adapter = new RestaurantAdapter();
@@ -43,8 +53,8 @@ public class RestaurantFragment extends Fragment {
         binding.restaurantList.setHasFixedSize(true);
     }
 
-    private void initViewModel(){
-        viewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(RestaurantViewModel.class);
+    private void setFusedLocationProviderClient() {
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
     }
 
     private void getBaseList(){

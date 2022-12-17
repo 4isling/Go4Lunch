@@ -1,5 +1,6 @@
 package com.exemple.go4lunch.ui.restaurant;
 
+import android.annotation.SuppressLint;
 import android.location.Location;
 
 import androidx.annotation.NonNull;
@@ -12,6 +13,7 @@ import androidx.lifecycle.ViewModel;
 import com.exemple.go4lunch.data.location.LocationRepository;
 import com.exemple.go4lunch.data.permission_checker.PermissionChecker;
 import com.exemple.go4lunch.data.restaurant.RestaurantRepository;
+import com.exemple.go4lunch.data.restaurant.RestaurantResult;
 import com.exemple.go4lunch.data.restaurant.Result;
 
 
@@ -20,18 +22,42 @@ import java.util.List;
 
 public class RestaurantViewModel extends ViewModel {
 
-    private final RestaurantRepository repository;
+    @NonNull
+    private final PermissionChecker permissionChecker;
 
-    private final MutableLiveData<Location> currentUserLocation = new MutableLiveData<>();
+    @NonNull
+    private final RestaurantRepository restaurantRepository;
 
-    private final LiveData<RestaurantsViewState> restaurantsViewStateLiveData;
+    @NonNull
+    private final LocationRepository locationRepository;
 
-    public RestaurantViewModel(RestaurantRepository restaurantRepository) {
-        repository = restaurantRepository;
+    private final MutableLiveData<Boolean> hasGpsPermissionLiveData = new MutableLiveData<>();
 
-        restaurantsViewStateLiveData = Transformations.switchMap(currentUserLocation ,userLocation ->
-                Transformations.map(repository.getRestaurantLiveData(userLocation), this::mapDataToViewState)
-        );
+    private final LiveData<Location> locationLiveData;
+
+    private LiveData<RestaurantsViewState> restaurantsViewStateLiveData;
+
+    private LiveData<List<RestaurantResult>> restaurantResultLiveData;
+
+    public RestaurantViewModel(@NonNull RestaurantRepository restaurantRepository,
+                               @NonNull LocationRepository locationRepository,
+                               @NonNull PermissionChecker permissionChecker
+    ){
+        this.restaurantRepository = restaurantRepository;
+        this.locationRepository = locationRepository;
+        this.permissionChecker = permissionChecker;
+
+        this.locationLiveData = locationRepository.getLocationLiveData();
+
+    /*    restaurantsViewStateLiveData = Transformations.switchMap(locationLiveData ,userLocation ->
+                Transformations.map(restaurantRepository.getRestaurantLiveData(userLocation, 5000, type), this::mapDataToViewState)
+        );*/
+    }
+
+    public LiveData<List<Result>> getRestaurantsList(Location location, int radius, String type){
+        restaurantResultLiveData = restaurantRepository.getNearbyPlaces(location, radius, type);
+
+        return restaurantResultLiveData;
     }
 
     public LiveData<RestaurantsViewState> getRestaurantsViewStateLiveData() {
@@ -61,4 +87,16 @@ public class RestaurantViewModel extends ViewModel {
             return restaurantViewStateItems;
         });
     }*/
+
+    @SuppressLint("MissingPermission")
+    public void refresh(){
+        boolean hasGpsPermission = permissionChecker.hasLocationPermission();
+        hasGpsPermissionLiveData.setValue(hasGpsPermission);
+
+        if(hasGpsPermission){
+            locationRepository.startLocationRequest();
+        } else {
+            locationRepository.stopLocationRequest();
+        }
+    }
 }

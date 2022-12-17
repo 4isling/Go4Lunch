@@ -2,9 +2,16 @@ package com.exemple.go4lunch.ui.map;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +26,10 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.exemple.go4lunch.R;
 import com.exemple.go4lunch.databinding.FragmentMapBinding;
+import com.google.android.gms.location.CurrentLocationRequest;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -31,6 +41,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
@@ -60,25 +71,41 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     // location retrieved by the Fused Location Provider.
     private Location lastKnownLocation;
     private LatLng userLocation;
+    private String locationString;
 
     //Keys for storing activity state
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         binding = FragmentMapBinding.inflate(getLayoutInflater());
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_view);
-        View root = binding.getRoot();
-        initMap();
+        this.fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
         getLocationPermission();
-        getCurrentLocation();
-        return root;
+
     }
 
 
-    public MapFragment(){}
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+        this.initFAB();
+        View root = binding.getRoot();
+        initMap();
+
+        return root;
+    }
+
+    private void initFAB() {
+        binding.fabLocation.setOnClickListener(view -> getUserLocation());
+    }
+
+
+    public MapFragment(){
+
+    }
 
     public static MapFragment newInstance(){
         return new MapFragment();
@@ -87,7 +114,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void initMap(){
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
             .findFragmentById(R.id.map_view);
-
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
+/*
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap mMap) {
@@ -106,12 +136,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             }
         });
-    }
+  */  }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+
 
     @Override
     public void onDestroyView() {
@@ -147,23 +174,62 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         if (ContextCompat.checkSelfPermission(this.getActivity().getApplicationContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            locationPermissionGranted = true;
+            this.locationPermissionGranted = true;
         } else {
             ActivityCompat.requestPermissions(this.getActivity(),
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+
         }
     }
 
     @SuppressLint("MissingPermission")
-    private void getCurrentLocation(){
-        Task<Location> task = fusedLocationProviderClient.getLastLocation();
-        task.addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                lastKnownLocation = location;
+    private void getUserLocation() {
+        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(location -> {
+            if (location != null) {
+                String locationString = lastKnownLocation.getLatitude() + "," + lastKnownLocation.getLongitude();
+                updateWithPosition();
+                //getNearbyRestaurant();
+                ActivityCompat.requestPermissions(
+                        requireActivity(),
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                        0
+                );
+            } else {
+                if (!isLocationEnable()) {
+                    openLocationDialog();
+                } else {
+                    getCurrentLocation();
+                }
             }
         });
+    }
+
+    private void getNearbyRestaurant() {
+       // restaurantRepository.getAllRestaurants
+    }
+
+    private Boolean isLocationEnable() {
+        LocationManager locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
+    private void openLocationDialog() {
+        new AlertDialog.Builder(requireContext())
+                .setMessage("enable location")
+                .setPositiveButton("open location settings", (dialogInterface, i) -> requireContext().startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
+                .setOnDismissListener(DialogInterface::cancel).show();
+    }
+
+    @SuppressLint("MissingPermission")
+    private void getCurrentLocation() {
+        CurrentLocationRequest currentLocationRequest = new CurrentLocationRequest.Builder().setPriority(Priority.PRIORITY_HIGH_ACCURACY).setDurationMillis(3000).build();
+        fusedLocationProviderClient.getCurrentLocation(currentLocationRequest, null).addOnSuccessListener(location -> {
+            locationString = location.getLatitude() + "," + location.getLongitude();
+            Log.e("locationRequestTest", locationString);
+            updateWithPosition();
+            //getNearbyRestaurant();
+        });
+
     }
 
     @Override

@@ -9,7 +9,10 @@ import androidx.lifecycle.MutableLiveData;
 import com.exemple.go4lunch.data.FirebaseHelper;
 import com.exemple.go4lunch.model.workmate.Workmate;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +22,14 @@ public class WorkmateRepository {
 
     private static WorkmateRepository sWorkmateRepository;
     private static FirebaseHelper mFirebaseHelper;
+
+    private static final String COLLECTION_NAME = "users";
+    private static final String SUCCESS = "success";
+    private static final String ERROR = "error";
+    private static final String RESTAURANT_CHOICE = "restaurantChoice";
+    private static final String RESTAURANT_CHOICE_NAME = "restaurantChoiceName";
+    private static final String LIKES = "likes";
+
 
     public static WorkmateRepository getInstance(){
         if(sWorkmateRepository == null){
@@ -31,7 +42,7 @@ public class WorkmateRepository {
         mFirebaseHelper = FirebaseHelper.getInstance();
         // Uncomment this method to populate your firebase database, it will upload some data
         // Comment it again after the first launch
-        //initData();
+        initData();
     }
 
     public MutableLiveData<List<Workmate>> getAllWorkmate(){
@@ -39,6 +50,7 @@ public class WorkmateRepository {
             if(task.isSuccessful()){
                 ArrayList<Workmate> workmate = new ArrayList<>();
                 for(QueryDocumentSnapshot document : task.getResult()){
+
                     workmate.add(document.toObject(Workmate.class));
                 }
                 listOfWorkmate.postValue(workmate);

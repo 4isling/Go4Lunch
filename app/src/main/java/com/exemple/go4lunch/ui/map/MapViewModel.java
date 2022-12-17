@@ -10,4 +10,5 @@ public class MapViewModel extends ViewModel {
     public MapViewModel() {
 
     }
+
 }

@@ -7,9 +7,13 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.exemple.go4lunch.data.permission_checker.PermissionChecker;
+import com.exemple.go4lunch.ui.ViewModelFactory;
 import com.exemple.go4lunch.ui.map.MapFragment;
+import com.exemple.go4lunch.ui.map.MapViewModel;
 import com.exemple.go4lunch.ui.restaurant.RestaurantFragment;
+import com.exemple.go4lunch.ui.restaurant.RestaurantViewModel;
 import com.exemple.go4lunch.ui.workmate.WorkmateFragment;
+import com.exemple.go4lunch.ui.workmate.WorkmateViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
@@ -22,6 +26,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -29,6 +34,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.exemple.go4lunch.databinding.ActivityMainBinding;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.firestore.core.View;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -36,6 +42,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView drawerNavView;
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
+    private MapViewModel mapFragmentViewModel;
+    private RestaurantViewModel restaurantViewModel;
+    private WorkmateViewModel workmateViewModel;
     private MapFragment mapFragment;
     private RestaurantFragment restaurantFragment;
     private WorkmateFragment workmateFragment;
@@ -45,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        this.initViewModel();
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -57,6 +66,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.checkUserLocationPermission();
 
         this.getResources().getString(R.string.MAPS_API_KEY);
+        replaceFragment(mapFragment);
+    }
+
+    private void initViewModel() {
+        mapFragmentViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(MapViewModel.class);
+        restaurantViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(RestaurantViewModel.class);
+        workmateViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(WorkmateViewModel.class);
     }
 
     private void checkUserLocationPermission(){

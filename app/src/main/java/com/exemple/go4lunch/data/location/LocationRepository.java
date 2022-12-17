@@ -1,5 +1,6 @@
 package com.exemple.go4lunch.data.location;
 
+import android.annotation.SuppressLint;
 import android.location.Location;
 import android.os.Looper;
 
@@ -19,25 +20,28 @@ public class LocationRepository {
     private static final int LOCATION_REQUEST_INTERVAL_MS = 10_000;
     private static final float SMALLEST_DISPLACEMENT_THRESHOLD_METER = 25;
 
+
     @NonNull
     private final FusedLocationProviderClient fusedLocationProviderClient;
 
     @NonNull
     private final MutableLiveData<Location> locationMutableLiveData = new MutableLiveData<>(null);
 
+    private final MutableLiveData<Boolean> hasGpsPermissionLiveData = new MutableLiveData<>();
+
     private LocationCallback callback;
 
-    public LocationRepository(@NonNull FusedLocationProviderClient fusedLocationProviderClient){
+    public LocationRepository(@NonNull FusedLocationProviderClient fusedLocationProviderClient) {
         this.fusedLocationProviderClient = fusedLocationProviderClient;
     }
 
-    public LiveData<Location>  getLocationLiveData(){
+    public LiveData<Location> getLocationLiveData() {
         return locationMutableLiveData;
     }
 
     @RequiresPermission(anyOf = {"android.permission.ACCESS_COARSE_LOCATION", "android.permission.ACCESS_FINE_LOCATION"})
-    public void startLocationRequest(){
-        if(callback == null){
+    public void startLocationRequest() {
+        if (callback == null) {
             callback = new LocationCallback() {
                 @Override
                 public void onLocationResult(@NonNull LocationResult locationResult) {
@@ -49,17 +53,18 @@ public class LocationRepository {
 
         }
 
-    fusedLocationProviderClient.removeLocationUpdates(callback);
+        fusedLocationProviderClient.removeLocationUpdates(callback);
 
-    fusedLocationProviderClient.requestLocationUpdates(
-            LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setSmallestDisplacement(SMALLEST_DISPLACEMENT_THRESHOLD_METER)
-                .setInterval(LOCATION_REQUEST_INTERVAL_MS),
-            callback,
-            Looper.getMainLooper()
-    );
-}
+        fusedLocationProviderClient.requestLocationUpdates(
+                LocationRequest.create()
+                        .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                        .setSmallestDisplacement(SMALLEST_DISPLACEMENT_THRESHOLD_METER)
+                        .setInterval(LOCATION_REQUEST_INTERVAL_MS),
+                callback,
+                Looper.getMainLooper()
+        );
+    }
+
     public void stopLocationRequest() {
         if (callback != null) {
             fusedLocationProviderClient.removeLocationUpdates(callback);

@@ -17,7 +17,6 @@ public class FirebaseHelper {
 
     }
 
-
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     public final CollectionReference workmateRef = db.collection("workmates");
 
