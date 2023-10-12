@@ -2,8 +2,8 @@ package com.exemple.go4lunch;
 
 import static com.exemple.go4lunch.BuildConfig.APPLICATION_ID;
 
-import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,23 +12,16 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.exemple.go4lunch.databinding.ActivityMainBinding;
 import com.exemple.go4lunch.databinding.ActivitySigninBinding;
-import com.facebook.FacebookSdk;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,19 +31,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class SignInActivity extends AppCompatActivity {
-    protected GoogleSignInOptions gso;
-    protected GoogleSignInClient gsc;
 
     private static final int RC_SIGN_IN = 666;
     private static final String TAG = "SignInActivity";
-
-    private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();;
-    private FirebaseUser firebaseUser;
-    private GoogleSignInClient googleSignInClient;
+    private Application application;
+    private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private FirebaseAuth.AuthStateListener listener;
     private List<AuthUI.IdpConfig> providers;
 
@@ -58,7 +46,6 @@ public class SignInActivity extends AppCompatActivity {
     protected void onStart(){
         super.onStart();
         firebaseAuth.addAuthStateListener(listener);
-        //firebaseAuth.addAuthStateListener(listener);
     }
 
     @Override
@@ -66,9 +53,8 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         com.exemple.go4lunch.databinding.ActivitySigninBinding binding = ActivitySigninBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        application = getApplication();
         FirebaseApp.initializeApp(this);
-        FacebookSdk.sdkInitialize(this);
         boolean isMain = isMainProcess(this);
         FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(isMain).build();
         FirebaseFirestore.getInstance().setFirestoreSettings(settings);
@@ -84,15 +70,12 @@ public class SignInActivity extends AppCompatActivity {
             // other things
             return;
         }
-
         // other things
         if(firebaseAuth.getCurrentUser() != null){
             startActivity(new Intent(this, MainActivity.class));
             this.finish();
         }
         initFirebaseAuth();
-
-
     }
 
     private boolean isMainProcess(Context context) {
@@ -112,18 +95,8 @@ public class SignInActivity extends AppCompatActivity {
 
     private final ActivityResultLauncher<Intent> signInLauncher = registerForActivityResult(
             new FirebaseAuthUIActivityResultContract(),
-            new ActivityResultCallback<FirebaseAuthUIAuthenticationResult>() {
-                @Override
-                public void onActivityResult(FirebaseAuthUIAuthenticationResult result) {
-                    onSignInResult(result);
-                }
-            }
+            this::onSignInResult
     );
-
-    private void getAuthCredential() {
-        //AuthCredential authCredential = GoogleAuthProvider.getCredential(token, null);
-
-    }
 
     @Override
     protected void onStop() {
@@ -145,34 +118,27 @@ public class SignInActivity extends AppCompatActivity {
         providers = Arrays.asList(
                 new AuthUI.IdpConfig.EmailBuilder().build(),
                 new AuthUI.IdpConfig.GoogleBuilder().build(),
-                new AuthUI.IdpConfig.TwitterBuilder().build(),
-                new AuthUI.IdpConfig.FacebookBuilder().build()
+                new AuthUI.IdpConfig.TwitterBuilder().build()
         );
 
-        listener = new FirebaseAuth.AuthStateListener() {
-
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null)
-                {
-                    Toast.makeText(SignInActivity.this, "You already login with uid"+ user.getUid(), Toast.LENGTH_SHORT).show();
-                }
-                else
-                {
-                    startActivityForResult(
-                            AuthUI.getInstance()
-                                    .createSignInIntentBuilder()
-                                    .setAvailableProviders(providers)
-                                    .build(),
-                            RC_SIGN_IN);
-                }
+        listener = firebaseAuth -> {
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            if (user != null)
+            {
+                Toast.makeText(SignInActivity.this, "You already login with uid"+ user.getUid(), Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                startActivityForResult(
+                        AuthUI.getInstance()
+                                .createSignInIntentBuilder()
+                                .setAvailableProviders(providers)
+                                .setIsSmartLockEnabled(false, true)
+                                .build(),
+                        RC_SIGN_IN);
             }
         };
-        //remplace signInFirebase
-/*
-
-  */  }
+    }
 
     private void onSignInResult(FirebaseAuthUIAuthenticationResult result) {
         IdpResponse response = result.getIdpResponse();

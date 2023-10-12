@@ -1,5 +1,5 @@
 
-package com.exemple.go4lunch.data.restaurant;
+package com.exemple.go4lunch.data.restaurant.nerbysearch;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 // This class has been generated with https://www.jsonschema2pojo.org/
-public class Southwest implements Serializable
+public class Location implements Serializable
 {
 
     @SerializedName("lat")
@@ -16,13 +16,13 @@ public class Southwest implements Serializable
     @SerializedName("lng")
     @Expose
     private float lng;
-    private final static long serialVersionUID = -1816778855071701352L;
+    private final static long serialVersionUID = 4980841243321795558L;
 
     /**
      * No args constructor for use in serialization
      * 
      */
-    public Southwest() {
+    public Location() {
     }
 
     /**
@@ -30,7 +30,7 @@ public class Southwest implements Serializable
      * @param lng
      * @param lat
      */
-    public Southwest(float lat, float lng) {
+    public Location(float lat, float lng) {
         super();
         this.lat = lat;
         this.lng = lng;
@@ -44,7 +44,7 @@ public class Southwest implements Serializable
         this.lat = lat;
     }
 
-    public Southwest withLat(float lat) {
+    public Location withLat(float lat) {
         this.lat = lat;
         return this;
     }
@@ -57,7 +57,7 @@ public class Southwest implements Serializable
         this.lng = lng;
     }
 
-    public Southwest withLng(float lng) {
+    public Location withLng(float lng) {
         this.lng = lng;
         return this;
     }
@@ -65,7 +65,7 @@ public class Southwest implements Serializable
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(Southwest.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
+        sb.append(Location.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
         sb.append("lat");
         sb.append('=');
         sb.append(this.lat);
@@ -95,10 +95,10 @@ public class Southwest implements Serializable
         if (other == this) {
             return true;
         }
-        if ((other instanceof Southwest) == false) {
+        if ((other instanceof Location) == false) {
             return false;
         }
-        Southwest rhs = ((Southwest) other);
+        Location rhs = ((Location) other);
         return ((Float.floatToIntBits(this.lng) == Float.floatToIntBits(rhs.lng))&&(Float.floatToIntBits(this.lat) == Float.floatToIntBits(rhs.lat)));
     }
 

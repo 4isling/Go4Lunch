@@ -1,4 +1,4 @@
-package com.exemple.go4lunch.data.restaurant;
+package com.exemple.go4lunch.data.restaurant.nerbysearch;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

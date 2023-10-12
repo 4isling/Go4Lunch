@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -12,15 +11,12 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.exemple.go4lunch.R;
 import com.exemple.go4lunch.databinding.FragmentWorkmateBinding;
-import com.exemple.go4lunch.ui.ViewModelFactory;
-import com.exemple.go4lunch.ui.restaurant.RestaurantViewModel;
+import com.exemple.go4lunch.ui.restaurant.RestaurantListViewModel;
 
 public class WorkmateFragment extends Fragment {
     private WorkmateViewModel workmateViewModel;
-    private RestaurantViewModel restaurantViewModel;
+    private RestaurantListViewModel restaurantListViewModel;
     private WorkmateAdapter adapter;
     private RecyclerView recyclerView;
     private FragmentWorkmateBinding binding;

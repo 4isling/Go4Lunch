@@ -13,8 +13,8 @@ public class MainApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        sApplication = this;
         FirebaseApp.initializeApp(this);
+        sApplication = this;
     }
 
     public static Application getApplication() {

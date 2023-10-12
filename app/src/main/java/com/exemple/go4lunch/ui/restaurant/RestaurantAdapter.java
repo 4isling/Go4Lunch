@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.exemple.go4lunch.R;
-import com.exemple.go4lunch.data.restaurant.Result;
+import com.exemple.go4lunch.data.restaurant.nerbysearch.Result;
 
 public class RestaurantAdapter extends ListAdapter<Result, RestaurantAdapter.ViewHolder> {
 

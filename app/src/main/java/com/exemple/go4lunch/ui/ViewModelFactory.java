@@ -16,24 +16,27 @@ import com.exemple.go4lunch.data.permission_checker.PermissionChecker;
 import com.exemple.go4lunch.data.restaurant.RestaurantRepository;
 import com.exemple.go4lunch.data.workmate.WorkmateRepository;
 import com.exemple.go4lunch.ui.map.MapViewModel;
-import com.exemple.go4lunch.ui.restaurant.RestaurantViewModel;
+import com.exemple.go4lunch.ui.restaurant.RestaurantListViewModel;
 import com.exemple.go4lunch.ui.workmate.WorkmateViewModel;
 
 public class ViewModelFactory implements ViewModelProvider.Factory {
     private static volatile ViewModelFactory factory;
 
+    private static Application application;
     @NonNull
     private final PermissionChecker permissionChecker;
     @NonNull
     private final RestaurantRepository restaurantRepository;
     @NonNull
     private final LocationRepository locationRepository;
+    @NonNull
+    private final WorkmateRepository workmateRepository;
 
     public static ViewModelFactory getInstance() {
         if (factory == null) {
+            application = MainApplication.getApplication();
             synchronized (ViewModelFactory.class) {
                 if (factory == null) {
-                    Application application = MainApplication.getApplication();
                     factory = new ViewModelFactory(
                             new PermissionChecker(
                                     application
@@ -45,7 +48,10 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                             ),
                             new RestaurantRepository(
                                     RetrofitService.getRestaurantApi()
-                            )
+                            ),
+                            new WorkmateRepository()
+
+
                     );
                 }
             }
@@ -53,16 +59,17 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         return factory;
     }
 
-    private final WorkmateRepository workmateRepository = new WorkmateRepository();
-
     private ViewModelFactory(
             @NonNull PermissionChecker permissionChecker,
             @NonNull LocationRepository locationRepository,
-            @NonNull RestaurantRepository restaurantRepository
+            @NonNull RestaurantRepository restaurantRepository,
+            @NonNull WorkmateRepository workmateRepository
+
     ) {
+        this.restaurantRepository = restaurantRepository;
         this.locationRepository = locationRepository;
         this.permissionChecker = permissionChecker;
-        this.restaurantRepository = restaurantRepository;
+        this.workmateRepository = workmateRepository;
     }
 
     @SuppressWarnings("unchecked")
@@ -72,15 +79,18 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         if (modelClass.isAssignableFrom(WorkmateViewModel.class)) {
             return (T) new WorkmateViewModel();
         }
-        if (modelClass.isAssignableFrom(RestaurantViewModel.class)) {
-            return (T) new RestaurantViewModel(
+        if (modelClass.isAssignableFrom(RestaurantListViewModel.class)) {
+            return (T) new RestaurantListViewModel(
                     restaurantRepository,
                     locationRepository,
                     permissionChecker
             );
         }
         if (modelClass.isAssignableFrom(MapViewModel.class)) {
-            return (T) new MapViewModel();
+            return (T) new MapViewModel(
+                    permissionChecker,
+                    restaurantRepository,
+                    locationRepository);
         }
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass);
     }

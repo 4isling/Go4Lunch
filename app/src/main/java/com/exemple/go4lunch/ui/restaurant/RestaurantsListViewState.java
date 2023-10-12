@@ -2,16 +2,16 @@ package com.exemple.go4lunch.ui.restaurant;
 
 import androidx.annotation.NonNull;
 
-import com.exemple.go4lunch.data.restaurant.Result;
+import com.exemple.go4lunch.data.restaurant.nerbysearch.Result;
 
 import java.util.List;
 import java.util.Objects;
 
-public class RestaurantsViewState {
+public class RestaurantsListViewState {
     @NonNull
     private final List<Result> restaurants;
 
-    public RestaurantsViewState(
+    public RestaurantsListViewState(
             @NonNull List<Result> restaurants
     ){
         this.restaurants = restaurants;

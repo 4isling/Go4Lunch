@@ -22,14 +22,14 @@
     <string name="coworker_number">(2)</string>
 
     <!--Firebase--> <!--googleApi-->
-    <string name="firebase_web_api_key">AIzaSyD2-mxIKx2n_L-EAPzyNpN5x7e5czSIGWE</string>
+    <string name="firebase_web_api_key">AIzaSyCvdxvqqvTkuWWlnNWJfW2bL2_3pP4h8jw</string>
     <!--Firebase signin method key-->
     <string name="twitter_api_key">fq0oPGZg2VjenRWJJvXKAA2RR</string>
     <string name="twitter_secret_code_api">tIVjDnwJrc9qZh2hvhvAEdebgP76bXZPG9PTCM23XQdPE9Tz4z</string>
 
     <string name="facebook_secret_code_app">Ac!P9BUPE.@v</string>
     <!--Google Cloud api key-->
-    <string name="google_cloud_api_key">AIzaSyCQd3Rc0rO1RGAtqJvNJJtcxDUJu5ijd4M</string>
+    <string name="google_cloud_api_key">AIzaSyA_Fr39QbxhgdVHLEVCWsBvKGvhpw31dgI</string>
     <!--Google Api id-->
     <string name="map_id">24ed7a8f385db344</string>
 
@@ -45,5 +45,7 @@
     <!--Twitter-->
     <string name="twitter_app_id">23762590</string>
     <string name="tw_login_protocol_scheme"> </string>
+    <string name="location_permission_denied"><![CDATA[This sample requires location permission to enable the \'my location\' layer. Please try again and grant access to use the location.\nIf the permission has been permanently denied, it can be enabled from the System Settings &gt; Apps &gt; \'Go4Lunch\']]></string>
+    <string name="permission_required_toast">Location permission is required for this app.</string>
 
 </resources>
