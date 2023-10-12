@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,13 +19,9 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
@@ -37,15 +32,14 @@ public class SignInActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 666;
     private static final String TAG = "SignInActivity";
-    private Application application;
-    private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    private FirebaseAuth  firebaseAuth;
     private FirebaseAuth.AuthStateListener listener;
-    private List<AuthUI.IdpConfig> providers;
 
     @Override
     protected void onStart(){
         super.onStart();
-        firebaseAuth.addAuthStateListener(listener);
+
+
     }
 
     @Override
@@ -53,12 +47,9 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         com.exemple.go4lunch.databinding.ActivitySigninBinding binding = ActivitySigninBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        application = getApplication();
         FirebaseApp.initializeApp(this);
-        boolean isMain = isMainProcess(this);
-        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(isMain).build();
-        FirebaseFirestore.getInstance().setFirestoreSettings(settings);
-
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuth.addAuthStateListener(listener);
         listener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -66,10 +57,6 @@ public class SignInActivity extends AppCompatActivity {
             }
         };
 
-        if (!isMain) {
-            // other things
-            return;
-        }
         // other things
         if(firebaseAuth.getCurrentUser() != null){
             startActivity(new Intent(this, MainActivity.class));
@@ -115,7 +102,7 @@ public class SignInActivity extends AppCompatActivity {
 
 
     public void initFirebaseAuth(){
-        providers = Arrays.asList(
+        List<AuthUI.IdpConfig> providers = Arrays.asList(
                 new AuthUI.IdpConfig.EmailBuilder().build(),
                 new AuthUI.IdpConfig.GoogleBuilder().build(),
                 new AuthUI.IdpConfig.TwitterBuilder().build()
