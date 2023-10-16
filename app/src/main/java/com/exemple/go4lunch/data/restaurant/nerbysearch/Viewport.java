@@ -12,10 +12,10 @@ public class Viewport implements Serializable
 
     @SerializedName("northeast")
     @Expose
-    private Northeast northeast;
+    public Northeast northeast;
     @SerializedName("southwest")
     @Expose
-    private Southwest southwest;
+    public Southwest southwest;
     private final static long serialVersionUID = -7012145521539421235L;
 
     /**

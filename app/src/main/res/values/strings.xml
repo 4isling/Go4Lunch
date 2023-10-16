@@ -21,28 +21,7 @@
     <string name="restaurant_name">Moulin Rouge</string>
     <string name="coworker_number">(2)</string>
 
-    <!--Firebase--> <!--googleApi-->
-    <string name="firebase_web_api_key">AIzaSyCvdxvqqvTkuWWlnNWJfW2bL2_3pP4h8jw</string>
-    <!--Firebase signin method key-->
-    <string name="twitter_api_key">fq0oPGZg2VjenRWJJvXKAA2RR</string>
-    <string name="twitter_secret_code_api">tIVjDnwJrc9qZh2hvhvAEdebgP76bXZPG9PTCM23XQdPE9Tz4z</string>
 
-    <string name="facebook_secret_code_app">Ac!P9BUPE.@v</string>
-    <!--Google Cloud api key-->
-    <string name="google_cloud_api_key">AIzaSyA_Fr39QbxhgdVHLEVCWsBvKGvhpw31dgI</string>
-    <!--Google Api id-->
-    <string name="map_id">24ed7a8f385db344</string>
-
-    <!--Facebook-->
-    <string name="facebook_application_id" translatable="false">927704961249495</string>
-    <string name="fb_login_protocol_scheme" translatable="false">fb927704961249495</string>
-    <string name="facebook_client_token" translatable="false">8a5247711d969feec99daaa9afc1f643</string>
-    <!--
-    client id : TXVvbTVWYVM0alpfSHBUUTU0T0c6MTpjaQ
-    Client secret : A8-RYDmIWgj6VUQS-IxgaHMgnfHEkFYsbfEcNOj2w9eVEfkojv
-       -->
-
-    <!--Twitter-->
     <string name="twitter_app_id">23762590</string>
     <string name="tw_login_protocol_scheme"> </string>
     <string name="location_permission_denied"><![CDATA[This sample requires location permission to enable the \'my location\' layer. Please try again and grant access to use the location.\nIf the permission has been permanently denied, it can be enabled from the System Settings &gt; Apps &gt; \'Go4Lunch\']]></string>
